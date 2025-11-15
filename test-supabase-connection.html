@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Supabase Connection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #fff;
+        }
+        .test-result {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .success { background: #10b981; }
+        .error { background: #ef4444; }
+        .info { background: #3b82f6; }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            background: #2a2a2a;
+            color: #fff;
+            border: 1px solid #444;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover { background: #2563eb; }
+    </style>
+</head>
+<body>
+    <h1>Supabase Connection Test</h1>
+    <p>Enter your Supabase credentials to test the connection:</p>
+    
+    <input type="text" id="supabaseUrl" placeholder="Your Supabase URL (e.g., https://xxxxx.supabase.co)" />
+    <input type="text" id="supabaseKey" placeholder="Your anon key" />
+    <button onclick="testConnection()">Test Connection</button>
+    
+    <div id="results"></div>
+
+    <script type="module">
+        async function testConnection() {
+            const url = document.getElementById('supabaseUrl').value.trim();
+            const key = document.getElementById('supabaseKey').value.trim();
+            const results = document.getElementById('results');
+            results.innerHTML = '';
+
+            if (!url || !key) {
+                results.innerHTML = '<div class="test-result error">Please enter both URL and key</div>';
+                return;
+            }
+
+            // Test 1: Check URL format
+            if (!url.startsWith('https://') || !url.includes('.supabase.co')) {
+                results.innerHTML += '<div class="test-result error">❌ Invalid URL format. Should be: https://xxxxx.supabase.co</div>';
+                return;
+            }
+
+            // Test 2: Try to fetch from Supabase
+            try {
+                results.innerHTML += '<div class="test-result info">Testing connection...</div>';
+                
+                const response = await fetch(`${url}/rest/v1/`, {
+                    method: 'GET',
+                    headers: {
+                        'apikey': key,
+                        'Authorization': `Bearer ${key}`
+                    }
+                });
+
+                if (response.ok || response.status === 404) {
+                    // 404 is OK - it means the API is reachable
+                    results.innerHTML += '<div class="test-result success">✅ Connection successful! Your Supabase URL and key are correct.</div>';
+                } else if (response.status === 401) {
+                    results.innerHTML += '<div class="test-result error">❌ Authentication failed. Your anon key might be incorrect.</div>';
+                } else {
+                    results.innerHTML += `<div class="test-result error">❌ Unexpected response: ${response.status}</div>`;
+                }
+            } catch (error) {
+                if (error.message.includes('Failed to fetch') || error.message.includes('ERR_NAME_NOT_RESOLVED')) {
+                    results.innerHTML += '<div class="test-result error">❌ DNS resolution failed. Possible causes:<br>';
+                    results.innerHTML += '1. Your Supabase project is PAUSED (free projects pause after 1 week)<br>';
+                    results.innerHTML += '2. The project URL is incorrect<br>';
+                    results.innerHTML += '3. The project was deleted<br><br>';
+                    results.innerHTML += '<strong>Solution:</strong> Go to <a href="https://app.supabase.com" target="_blank" style="color: #60a5fa;">app.supabase.com</a> and check your project status. If paused, click "Resume".</div>';
+                } else {
+                    results.innerHTML += `<div class="test-result error">❌ Connection error: ${error.message}</div>`;
+                }
+            }
+        }
+
+        window.testConnection = testConnection;
+    </script>
+</body>
+</html>
+

@@ -11,7 +11,11 @@
 2. Click on **Settings** → **API**
 3. Copy the following:
    - **Project URL** (this is your `VITE_SUPABASE_URL`)
-   - **anon/public key** (this is your `VITE_SUPABASE_ANON_KEY`)
+     - Should look like: `https://xxxxxxxxxxxxx.supabase.co`
+   - **anon public** key (this is your `VITE_SUPABASE_ANON_KEY`)
+     - ⚠️ **IMPORTANT**: Use the **anon public** key (the long JWT token starting with `eyJ`)
+     - ❌ **DO NOT** use the "publishable" key or "service_role" key
+     - The anon key should be a very long string (200+ characters)
 
 ## Step 2: Set Up Environment Variables
 

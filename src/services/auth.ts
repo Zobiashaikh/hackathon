@@ -17,15 +17,18 @@ export const authService = {
       })
 
       if (error) {
-        return { user: null, session: null, error }
+        console.error('Sign up error:', error)
+        return { user: null, session: null, error: new Error(error.message) }
       }
 
       return { user: data.user, session: data.session, error: null }
     } catch (err) {
+      console.error('Sign up exception:', err)
+      const errorMessage = err instanceof Error ? err.message : 'Failed to connect to Supabase. Please check your internet connection and Supabase configuration.'
       return {
         user: null,
         session: null,
-        error: err instanceof Error ? err : new Error('An unexpected error occurred'),
+        error: new Error(errorMessage),
       }
     }
   },
@@ -39,15 +42,18 @@ export const authService = {
       })
 
       if (error) {
-        return { user: null, session: null, error }
+        console.error('Sign in error:', error)
+        return { user: null, session: null, error: new Error(error.message) }
       }
 
       return { user: data.user, session: data.session, error: null }
     } catch (err) {
+      console.error('Sign in exception:', err)
+      const errorMessage = err instanceof Error ? err.message : 'Failed to connect to Supabase. Please check your internet connection and Supabase configuration.'
       return {
         user: null,
         session: null,
-        error: err instanceof Error ? err : new Error('An unexpected error occurred'),
+        error: new Error(errorMessage),
       }
     }
   },
