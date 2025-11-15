@@ -4,7 +4,10 @@ A modern React + TypeScript + Vite application that uses the Socratic method to 
 
 ## Features
 
+- 🔐 **User Authentication**: Sign up and login to create your account
 - 📄 **PDF Upload & Processing**: Upload lecture PDFs (max 10MB) and extract content using Google Gemini AI
+- 💾 **PDF Storage**: All your uploaded PDFs are saved and tracked in your account
+- 📊 **PDF Dashboard**: View and manage all your uploaded PDFs in one place
 - 🎯 **Socratic Questioning**: AI generates progressive questions based on difficulty levels (1-4)
 - 📊 **Adaptive Difficulty**: Automatically adjusts difficulty based on your performance
 - 💡 **Progressive Hints**: Get up to 3 hints per question when you need help
@@ -19,12 +22,14 @@ A modern React + TypeScript + Vite application that uses the Socratic method to 
 - **Vite** - Build tool and dev server
 - **Tailwind CSS** - Styling
 - **React Router** - Client-side routing
+- **Supabase** - Backend (Authentication, Database, File Storage) - **100% Free Tier**
 - **Google Gemini AI** - PDF processing and question generation
 - **React Hot Toast** - Toast notifications
 
 ## Prerequisites
 
 - Node.js 18+ and npm
+- Supabase account ([Sign up for free](https://supabase.com))
 - Google Gemini API key ([Get one here](https://makersuite.google.com/app/apikey))
 
 ## Local Development Setup
@@ -42,17 +47,30 @@ cd Hackathon
 npm install
 ```
 
-### 3. Set up environment variables
+### 3. Set up Supabase
+
+Follow the detailed instructions in [SUPABASE_SETUP.md](./SUPABASE_SETUP.md) to:
+1. Create a Supabase project
+2. Set up the database table
+3. Create the storage bucket
+4. Configure security policies
+
+### 4. Set up environment variables
 
 Create a `.env` file in the root directory:
 
 ```env
+VITE_SUPABASE_URL=your_supabase_project_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 VITE_GEMINI_API_KEY=your_gemini_api_key_here
 ```
 
-**Important**: Replace `your_gemini_api_key_here` with your actual Google Gemini API key.
+**Important**: 
+- Get your Supabase credentials from your project's Settings → API
+- Replace `your_gemini_api_key_here` with your actual Google Gemini API key
+- Never commit your `.env` file to git
 
-### 4. Run the development server
+### 5. Run the development server
 
 ```bash
 npm run dev
@@ -60,13 +78,13 @@ npm run dev
 
 The app will be available at `http://localhost:5173`
 
-### 5. Build for production
+### 6. Build for production
 
 ```bash
 npm run build
 ```
 
-### 6. Preview production build
+### 7. Preview production build
 
 ```bash
 npm run preview

@@ -1,11 +1,17 @@
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext'
 import LiquidEther from './LiquidEther.tsx'
 
 function Landing() {
   const navigate = useNavigate()
+  const { user } = useAuth()
 
   const handleGetStarted = () => {
-    navigate('/upload')
+    if (user) {
+      navigate('/upload')
+    } else {
+      navigate('/login')
+    }
   }
 
   return (

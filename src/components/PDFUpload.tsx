@@ -1,11 +1,15 @@
 import { useState, useRef, DragEvent, ChangeEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { processPDF, analyzePDFContent, PDFAnalysisResult } from '../services/gemini'
+import { useAuth } from '../contexts/AuthContext'
+import { pdfStorageService } from '../services/pdfStorage'
+import toast from 'react-hot-toast'
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10MB in bytes
 
 function PDFUpload() {
   const navigate = useNavigate()
+  const { user } = useAuth()
   const [file, setFile] = useState<File | null>(null)
   const [pdfContent, setPdfContent] = useState<string | null>(null)
   const [pdfFileName, setPdfFileName] = useState<string>('')
@@ -14,6 +18,7 @@ function PDFUpload() {
   const [error, setError] = useState<string | null>(null)
   const [analysisResult, setAnalysisResult] = useState<PDFAnalysisResult | null>(null)
   const [isDragging, setIsDragging] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const validateFile = (selectedFile: File): string | null => {
@@ -90,7 +95,7 @@ function PDFUpload() {
   }
 
   const handleProcessPDF = async () => {
-    if (!file) return
+    if (!file || !user) return
     
     setIsProcessing(true)
     setError(null)
@@ -105,6 +110,31 @@ function PDFUpload() {
       setAnalysisResult(analysis)
       
       setPdfFileData(pdfBase64)
+
+      // Save PDF to Supabase
+      setIsSaving(true)
+      const { path: filePath, error: uploadError } = await pdfStorageService.uploadPDF(file, user.id)
+      
+      if (uploadError) {
+        console.error('Failed to upload PDF:', uploadError)
+        toast.error('PDF processed but failed to save. You can still use it for learning.')
+      } else {
+        // Save PDF record to database
+        const { error: saveError } = await pdfStorageService.savePDFRecord({
+          user_id: user.id,
+          file_name: file.name,
+          file_path: filePath,
+          file_size: file.size,
+          topics: analysis.topics,
+        })
+
+        if (saveError) {
+          console.error('Failed to save PDF record:', saveError)
+          toast.error('PDF processed but failed to save record.')
+        } else {
+          toast.success('PDF saved successfully!')
+        }
+      }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to process PDF. Please try again.'
       setError(errorMessage)
@@ -113,6 +143,7 @@ function PDFUpload() {
       setPdfFileData(null)
     } finally {
       setIsProcessing(false)
+      setIsSaving(false)
     }
   }
 
@@ -194,12 +225,20 @@ function PDFUpload() {
             </div>
           </div>
 
-          <button
-            onClick={handleStartLearning}
-            className="w-full py-3 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
-          >
-            Start Learning
-          </button>
+          <div className="space-y-3">
+            <button
+              onClick={handleStartLearning}
+              className="w-full py-3 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+            >
+              Start Learning
+            </button>
+            <button
+              onClick={() => navigate('/dashboard')}
+              className="w-full py-2 px-6 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors font-medium text-sm"
+            >
+              View My PDFs
+            </button>
+          </div>
         </div>
       </div>
     )
