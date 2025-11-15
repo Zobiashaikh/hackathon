@@ -10,6 +10,54 @@ import {
   ConversationMessage,
 } from '../services/gemini'
 
+// Speech Recognition types
+interface SpeechRecognition extends EventTarget {
+  continuous: boolean
+  interimResults: boolean
+  lang: string
+  start: () => void
+  stop: () => void
+  abort: () => void
+  onresult: (event: SpeechRecognitionEvent) => void
+  onerror: (event: SpeechRecognitionErrorEvent) => void
+  onend: () => void
+}
+
+interface SpeechRecognitionEvent {
+  resultIndex: number
+  results: SpeechRecognitionResultList
+}
+
+interface SpeechRecognitionErrorEvent {
+  error: string
+  message: string
+}
+
+interface SpeechRecognitionResultList {
+  length: number
+  item(index: number): SpeechRecognitionResult
+  [index: number]: SpeechRecognitionResult
+}
+
+interface SpeechRecognitionResult {
+  length: number
+  item(index: number): SpeechRecognitionAlternative
+  [index: number]: SpeechRecognitionAlternative
+  isFinal: boolean
+}
+
+interface SpeechRecognitionAlternative {
+  transcript: string
+  confidence: number
+}
+
+declare global {
+  interface Window {
+    SpeechRecognition: new () => SpeechRecognition
+    webkitSpeechRecognition: new () => SpeechRecognition
+  }
+}
+
 interface Message {
   id: string
   type: 'ai-question' | 'user-answer' | 'ai-explanation'
@@ -86,6 +134,8 @@ function LearningInterface() {
   const [exploredTopics, setExploredTopics] = useState<Set<string>>(new Set())
   const [lastErrorAction, setLastErrorAction] = useState<(() => Promise<void>) | null>(null)
   const [hasShownIntro, setHasShownIntro] = useState(false)
+  const [isListening, setIsListening] = useState(false)
+  const recognitionRef = useRef<SpeechRecognition | null>(null)
 
   // Generate intro explanation first, then first question on mount
   useEffect(() => {
@@ -235,6 +285,89 @@ function LearningInterface() {
 
   const handleAnswerChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setUserAnswer(e.target.value)
+  }
+
+  // Initialize speech recognition
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+      if (SpeechRecognition) {
+        const recognition = new SpeechRecognition()
+        recognition.continuous = false
+        recognition.interimResults = true
+        recognition.lang = 'en-US'
+
+        recognition.onresult = (event: SpeechRecognitionEvent) => {
+          let interimTranscript = ''
+          let finalTranscript = ''
+
+          for (let i = event.resultIndex; i < event.results.length; i++) {
+            const transcript = event.results[i][0].transcript
+            if (event.results[i].isFinal) {
+              finalTranscript += transcript + ' '
+            } else {
+              interimTranscript += transcript
+            }
+          }
+
+          if (finalTranscript) {
+            setUserAnswer((prev) => prev + finalTranscript)
+          } else if (interimTranscript) {
+            setUserAnswer((prev) => {
+              // Remove previous interim results and add new one
+              const base = prev.replace(/\s*\[Listening\.\.\.\]\s*$/, '')
+              return base + ' [Listening...]'
+            })
+          }
+        }
+
+        recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
+          console.error('Speech recognition error:', event.error)
+          setIsListening(false)
+          if (event.error === 'no-speech') {
+            toast.error('No speech detected. Please try again.')
+          } else if (event.error === 'not-allowed') {
+            toast.error('Microphone permission denied. Please enable it in your browser settings.')
+          } else {
+            toast.error('Speech recognition error. Please try again.')
+          }
+        }
+
+        recognition.onend = () => {
+          setIsListening(false)
+          setUserAnswer((prev) => prev.replace(/\s*\[Listening\.\.\.\]\s*$/, ''))
+        }
+
+        recognitionRef.current = recognition
+      }
+    }
+
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.stop()
+      }
+    }
+  }, [])
+
+  const toggleSpeechRecognition = () => {
+    if (!recognitionRef.current) {
+      toast.error('Speech recognition is not supported in your browser.')
+      return
+    }
+
+    if (isListening) {
+      recognitionRef.current.stop()
+      setIsListening(false)
+    } else {
+      try {
+        recognitionRef.current.start()
+        setIsListening(true)
+        toast.success('Listening... Speak now!')
+      } catch (error) {
+        console.error('Error starting speech recognition:', error)
+        toast.error('Failed to start speech recognition. Please try again.')
+      }
+    }
   }
 
   const handleSubmitAnswer = async () => {
@@ -512,12 +645,12 @@ function LearningInterface() {
 }
 
   return (
-    <div className="flex flex-col h-screen bg-[#0a0a1f]">
+    <div className="flex flex-col h-screen bg-gradient-to-br from-purple-900 via-pink-900 via-orange-900 to-blue-900">
       {/* Top Bar */}
-      <div className="bg-white border-b border-gray-200 px-8 py-4">
+      <div className="bg-gradient-to-r from-purple-900/90 via-pink-900/90 via-orange-900/90 to-blue-900/90 backdrop-blur-md border-b border-white/10 px-8 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-6">
-            <h1 className="text-2xl font-bold text-gray-900">Socratic Learning</h1>
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-pink-400 via-purple-400 via-orange-400 to-blue-400 bg-clip-text text-transparent">Brain Brew - Socratic Learning</h1>
             <div
               className={`px-4 py-1 rounded-full text-white font-semibold text-sm transition-all duration-500 ${
                 difficultyChanged ? 'scale-110 shadow-lg animate-pulse' : ''
@@ -528,12 +661,12 @@ function LearningInterface() {
             </div>
           </div>
           <div className="flex items-center space-x-4">
-            <div className="text-lg font-medium text-gray-700">
+            <div className="text-lg font-medium text-white">
               Question {currentQuestionNumber}
             </div>
             <button
               onClick={handleNewSession}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+              className="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-lg transition-colors"
             >
               New Session
             </button>
@@ -563,16 +696,16 @@ function LearningInterface() {
         {/* Main Chat Area */}
         <div className="flex-1 flex flex-col overflow-hidden">
           {/* Chat Messages */}
-          <div className="flex-1 overflow-y-auto px-8 py-6 space-y-4">
+          <div className="flex-1 overflow-y-auto px-8 py-6 space-y-4 bg-gradient-to-b from-purple-900/20 via-pink-900/20 via-orange-900/20 to-blue-900/20">
             {/* Empty State */}
             {messages.length === 0 && !isLoading && (
               <div className="flex items-center justify-center h-full">
                 <div className="text-center max-w-md">
                   <div className="text-6xl mb-4">📚</div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                  <h2 className="text-2xl font-bold bg-gradient-to-r from-pink-400 via-purple-400 via-orange-400 to-blue-400 bg-clip-text text-transparent mb-2">
                     Ready to Start Learning!
                   </h2>
-                  <p className="text-gray-600">
+                  <p className="text-gray-300">
                     Your first question will appear here. Take your time to think through each
                     answer.
                   </p>
@@ -582,7 +715,7 @@ function LearningInterface() {
 
             {messages.length === 0 && isLoading && (
               <div className="flex justify-start animate-fade-in">
-                <div className="max-w-3xl rounded-lg px-6 py-4 bg-blue-100 text-blue-900">
+                <div className="max-w-3xl rounded-lg px-6 py-4 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 backdrop-blur-sm text-white border border-white/20">
                   <div className="flex items-center space-x-2">
                     <svg
                       className="animate-spin h-5 w-5"
@@ -618,12 +751,12 @@ function LearningInterface() {
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <div
-                  className={`max-w-3xl rounded-lg px-6 py-4 transition-all hover:shadow-md ${
+                  className={`max-w-3xl rounded-lg px-6 py-4 transition-all hover:shadow-md backdrop-blur-sm ${
                     message.type === 'ai-question'
-                      ? 'bg-blue-100 text-blue-900'
+                      ? 'bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 text-white border border-white/20'
                       : message.type === 'user-answer'
-                      ? 'bg-gray-200 text-gray-900'
-                      : 'bg-green-100 text-green-900'
+                      ? 'bg-gradient-to-r from-orange-500/20 via-pink-500/20 to-purple-500/20 text-white border border-white/20'
+                      : 'bg-gradient-to-r from-green-500/20 via-blue-500/20 to-purple-500/20 text-white border border-white/20'
                   }`}
                 >
                   <p className="text-base whitespace-pre-wrap">{message.content}</p>
@@ -632,7 +765,7 @@ function LearningInterface() {
             ))}
             {isLoading && messages.length > 0 && (
               <div className="flex justify-start animate-fade-in">
-                <div className="max-w-3xl rounded-lg px-6 py-4 bg-gray-100 text-gray-700">
+                <div className="max-w-3xl rounded-lg px-6 py-4 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 backdrop-blur-sm text-white border border-white/20">
                   <div className="flex items-center space-x-2">
                     <svg
                       className="animate-spin h-5 w-5"
@@ -662,21 +795,42 @@ function LearningInterface() {
             <div ref={chatEndRef} />
           </div>
 
-          // Find the Input Area section (around line 350-380) and replace it with this:
-
-{/* Input Area */}
-<div className="border-t border-gray-700 bg-gray-900 px-8 py-4">
+          {/* Input Area */}
+<div className="border-t border-white/10 bg-gradient-to-r from-purple-900/80 via-pink-900/80 via-orange-900/80 to-blue-900/80 backdrop-blur-md px-8 py-4">
   <div className="max-w-4xl mx-auto">
     <div className="mb-3">
-      <textarea
-        ref={textareaRef}
-        value={userAnswer}
-        onChange={handleAnswerChange}
-        placeholder="Type your answer here (minimum 20 characters)..."
-        className="w-full px-4 py-3 border border-gray-700 bg-gray-800 text-white placeholder-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none min-h-[100px] max-h-[200px] disabled:bg-gray-900 disabled:cursor-not-allowed"
-        rows={3}
-        disabled={isLoading}
-      />
+      <div className="relative">
+        <textarea
+          ref={textareaRef}
+          value={userAnswer}
+          onChange={handleAnswerChange}
+          placeholder="Type your answer here (minimum 20 characters)..."
+          className="w-full px-4 py-3 pr-12 border border-white/20 bg-gradient-to-br from-purple-900/40 via-pink-900/40 via-orange-900/40 to-blue-900/40 backdrop-blur-sm text-white placeholder-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent resize-none min-h-[100px] max-h-[200px] disabled:opacity-50 disabled:cursor-not-allowed"
+          rows={3}
+          disabled={isLoading}
+        />
+        <button
+          type="button"
+          onClick={toggleSpeechRecognition}
+          disabled={isLoading}
+          className={`absolute right-3 top-3 p-2 rounded-full transition-all ${
+            isListening
+              ? 'bg-red-500 text-white animate-pulse'
+              : 'bg-gradient-to-r from-pink-500 to-purple-500 text-white hover:from-pink-600 hover:to-purple-600'
+          } disabled:opacity-50 disabled:cursor-not-allowed`}
+          title={isListening ? 'Stop listening' : 'Start voice input'}
+        >
+          {isListening ? (
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 012 0v4a1 1 0 11-2 0V7zM12 9a1 1 0 10-2 0v2a1 1 0 102 0V9z" clipRule="evenodd" />
+            </svg>
+          ) : (
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clipRule="evenodd" />
+            </svg>
+          )}
+        </button>
+      </div>
       <div className="flex items-center justify-between mt-2">
         <div className="text-sm text-gray-400">
           <span className={charCount < minChars ? 'text-red-400' : 'text-gray-400'}>
@@ -699,8 +853,8 @@ function LearningInterface() {
       disabled={!canSubmit || isLoading}
       className={`w-full py-3 px-6 rounded-lg font-medium transition-all ${
         canSubmit && !isLoading
-          ? 'bg-blue-600 text-white hover:bg-blue-700 hover:shadow-lg transform hover:scale-[1.02]'
-          : 'bg-gray-800 text-gray-600 cursor-not-allowed'
+          ? 'bg-gradient-to-r from-pink-500 via-purple-500 via-orange-500 to-blue-500 text-white hover:from-pink-600 hover:via-purple-600 hover:via-orange-600 hover:to-blue-600 hover:shadow-lg transform hover:scale-[1.02]'
+          : 'bg-gray-800/50 text-gray-400 cursor-not-allowed'
       }`}
     >
       {isLoading ? (
@@ -736,9 +890,9 @@ function LearningInterface() {
         </div>
 
         {/* Right Sidebar */}
-<div className="w-96 bg-gray-900 border-l border-gray-700 flex flex-col">
+<div className="w-96 bg-gradient-to-b from-purple-900/80 via-pink-900/80 via-orange-900/80 to-blue-900/80 backdrop-blur-md border-l border-white/10 flex flex-col">
   {/* Simple Info Section */}
-  <div className="p-4 bg-gray-800 border-b border-gray-700">
+  <div className="p-4 bg-gradient-to-br from-purple-900/60 via-pink-900/60 via-orange-900/60 to-blue-900/60 backdrop-blur-sm border-b border-white/10">
     <div className="space-y-3">
       <div>
         <div
