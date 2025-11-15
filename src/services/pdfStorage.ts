@@ -39,8 +39,7 @@ export const pdfStorageService = {
         console.error('Storage upload error:', uploadError)
         console.error('Error details:', {
           message: uploadError.message,
-          statusCode: uploadError.statusCode,
-          error: uploadError.error
+          name: uploadError.name
         })
         return { path: '', error: new Error(uploadError.message) }
       }
@@ -177,4 +176,3 @@ export const pdfStorageService = {
     }
   },
 }
-
