@@ -1,243 +1,256 @@
-# Socratic Learning Platform
+# 🧠 Brain Brew
 
-A modern React + TypeScript + Vite application that uses the Socratic method to help students learn from lecture PDFs. Upload your lecture slides, and the AI will guide you through thoughtful questions to deepen your understanding.
+**A Hackathon Project - Revolutionizing Learning Through AI-Powered Socratic Questioning**
 
-## Features
+Brain Brew is an innovative learning platform that transforms passive PDF reading into an engaging, interactive learning experience. Built for a hackathon, this application combines the ancient Socratic method with cutting-edge AI technology to help students truly understand their lecture materials, not just memorize them.
 
-- 🔐 **User Authentication**: Sign up and login to create your account
-- 📄 **PDF Upload & Processing**: Upload lecture PDFs (max 10MB) and extract content using Google Gemini AI
-- 💾 **PDF Storage**: All your uploaded PDFs are saved and tracked in your account
-- 📊 **PDF Dashboard**: View and manage all your uploaded PDFs in one place
-- 🎯 **Socratic Questioning**: AI generates progressive questions based on difficulty levels (1-4)
-- 📊 **Adaptive Difficulty**: Automatically adjusts difficulty based on your performance
-- 💡 **Progressive Hints**: Get up to 3 hints per question when you need help
-- 📈 **Performance Tracking**: Visual feedback on your last 3 responses
-- 🎨 **Modern UI**: Clean, desktop-only interface with smooth animations
-- 📚 **Topic Progress**: Track which topics from your PDF you've explored
+## 🎯 Project Overview
 
-## Tech Stack
+Brain Brew addresses a common problem: students often passively read through lecture PDFs without truly understanding the content. Our solution uses AI-powered Socratic questioning to create an adaptive, personalized learning experience that ensures knowledge sticks and comprehension deepens.
 
-- **React 18** - UI library
-- **TypeScript** - Type safety
-- **Vite** - Build tool and dev server
-- **Tailwind CSS** - Styling
-- **React Router** - Client-side routing
-- **Supabase** - Backend (Authentication, Database, File Storage) - **100% Free Tier**
-- **Google Gemini AI** - PDF processing and question generation
-- **React Hot Toast** - Toast notifications
+## ✨ Key Features
 
-## Prerequisites
+### 🔐 **User Authentication & Account Management**
+- **Secure Sign Up/Login**: Built with Supabase authentication for secure user accounts
+- **User Dashboard**: Access all your uploaded PDFs in one centralized location
+- **Cloud Storage**: All PDFs are securely stored in the cloud, accessible from anywhere
+- **Account Persistence**: Your learning progress and PDFs are saved across sessions
 
+### 📄 **PDF Upload & Processing**
+- **Drag & Drop Interface**: Intuitive file upload with drag-and-drop support
+- **Smart PDF Processing**: Automatically extracts and analyzes content using Google Gemini AI
+- **Topic Extraction**: Identifies key topics and concepts from your lecture materials
+- **File Management**: Track file size, upload date, and topics for each PDF
+- **10MB Limit**: Optimized for lecture slides and study materials
+
+### 🎓 **Socratic Learning Interface**
+- **AI-Powered Questions**: Google Gemini AI generates thoughtful, progressive questions based on your PDF content
+- **Difficulty Levels**: Questions range from basic (Level 1) to advanced (Level 4)
+- **Adaptive Difficulty**: System automatically adjusts question difficulty based on your performance
+- **Progressive Hints**: Get up to 3 hints per question when you need help
+- **Performance Tracking**: Visual feedback on your last 3 responses to track improvement
+
+### 📊 **Learning Analytics**
+- **Topic Progress Tracking**: See which topics from your PDF you've explored
+- **Performance Visualization**: Visual feedback on your learning progress
+- **Response History**: Track your answers and see patterns in your understanding
+- **Adaptive Algorithm**: Questions adapt in real-time to your learning pace
+
+### 🎨 **Modern User Experience**
+- **Beautiful Gradient Design**: Stunning pink, purple, and blue gradient theme throughout
+- **Smooth Animations**: LiquidEther background effects and smooth transitions
+- **Responsive Layout**: Clean, modern interface optimized for desktop learning
+- **Intuitive Navigation**: Easy-to-use navigation between upload, dashboard, and learning
+
+## 🛠️ Tech Stack
+
+### Frontend
+- **React 18** - Modern UI library for building interactive interfaces
+- **TypeScript** - Type-safe development for better code quality
+- **Vite** - Lightning-fast build tool and development server
+- **Tailwind CSS** - Utility-first CSS framework for rapid styling
+- **React Router** - Client-side routing for seamless navigation
+- **React Hot Toast** - Beautiful toast notifications for user feedback
+
+### Backend & Services
+- **Supabase** - Complete backend solution (100% Free Tier)
+  - Authentication: Secure user sign up/login
+  - Database: PostgreSQL for storing PDF metadata
+  - Storage: File storage for PDFs (1GB free)
+  - Row Level Security: Secure data access policies
+- **Google Gemini AI** - Advanced AI for:
+  - PDF content extraction
+  - Question generation using Socratic method
+  - Topic identification and analysis
+
+## 🚀 Getting Started
+
+### Prerequisites
 - Node.js 18+ and npm
 - Supabase account ([Sign up for free](https://supabase.com))
 - Google Gemini API key ([Get one here](https://makersuite.google.com/app/apikey))
 
-## Local Development Setup
+### Installation
 
-### 1. Clone the repository
+1. **Clone the repository**
+   ```bash
+   git clone <your-repo-url>
+   cd hackathon2-main
+   ```
 
-```bash
-git clone <your-repo-url>
-cd Hackathon
-```
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-### 2. Install dependencies
+3. **Set up Supabase**
+   - Follow the detailed instructions in [SUPABASE_SETUP.md](./SUPABASE_SETUP.md)
+   - Create a Supabase project
+   - Set up the database table and storage bucket
+   - Configure security policies
 
-```bash
-npm install
-```
+4. **Configure environment variables**
+   Create a `.env` file in the root directory:
+   ```env
+   VITE_SUPABASE_URL=your_supabase_project_url
+   VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+   VITE_GEMINI_API_KEY=your_gemini_api_key_here
+   ```
 
-### 3. Set up Supabase
+5. **Run the development server**
+   ```bash
+   npm run dev
+   ```
+   The app will be available at `http://localhost:5173`
 
-Follow the detailed instructions in [SUPABASE_SETUP.md](./SUPABASE_SETUP.md) to:
-1. Create a Supabase project
-2. Set up the database table
-3. Create the storage bucket
-4. Configure security policies
+## 📖 How It Works
 
-### 4. Set up environment variables
+1. **Sign Up/Login**: Create an account or sign in to access your learning dashboard
+2. **Upload PDF**: Drag and drop or browse to upload your lecture PDF (max 10MB)
+3. **AI Processing**: Brain Brew extracts content and identifies key topics using Gemini AI
+4. **Start Learning**: Begin your Socratic learning session with AI-generated questions
+5. **Adaptive Learning**: Answer questions and receive hints. The system adapts to your level
+6. **Track Progress**: View your uploaded PDFs and learning progress in your dashboard
 
-Create a `.env` file in the root directory:
+## 🎨 Design Philosophy
 
-```env
-VITE_SUPABASE_URL=your_supabase_project_url
-VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-VITE_GEMINI_API_KEY=your_gemini_api_key_here
-```
+Brain Brew features a stunning gradient design with pink, purple, and blue colors throughout:
+- **Hero Section**: Eye-catching landing page with animated LiquidEther background
+- **About Section**: Comprehensive information about the platform and its benefits
+- **Dark Mode Gradients**: Beautiful gradient backgrounds that create an immersive learning environment
+- **Modern UI Elements**: Glassmorphism effects, smooth animations, and intuitive navigation
 
-**Important**: 
-- Get your Supabase credentials from your project's Settings → API
-- Replace `your_gemini_api_key_here` with your actual Google Gemini API key
-- Never commit your `.env` file to git
+## 🔒 Security Features
 
-### 5. Run the development server
+- **Row Level Security (RLS)**: Database policies ensure users can only access their own data
+- **Secure File Storage**: PDFs stored securely in Supabase with user-specific access
+- **Authentication**: Secure sign up/login with email verification support
+- **Environment Variables**: Sensitive keys stored securely, never committed to git
 
-```bash
-npm run dev
-```
-
-The app will be available at `http://localhost:5173`
-
-### 6. Build for production
-
-```bash
-npm run build
-```
-
-### 7. Preview production build
-
-```bash
-npm run preview
-```
-
-## Project Structure
+## 📁 Project Structure
 
 ```
 ├── src/
 │   ├── components/
-│   │   ├── Layout.tsx          # Main layout wrapper
+│   │   ├── Landing.tsx          # Landing page with About section
+│   │   ├── Layout.tsx          # Main layout with navigation
+│   │   ├── Login.tsx           # Login component
+│   │   ├── SignUp.tsx          # Sign up component
 │   │   ├── PDFUpload.tsx       # PDF upload interface
-│   │   └── LearningInterface.tsx  # Main learning interface
+│   │   ├── LearningInterface.tsx  # Main learning interface
+│   │   ├── Dashboard.tsx       # User dashboard
+│   │   └── ProtectedRoute.tsx  # Route protection
 │   ├── services/
-│   │   └── gemini.ts          # Gemini API integration
-│   ├── pages/
-│   │   └── Home.tsx           # Home page (unused)
-│   ├── App.tsx                # Main app component with routing
-│   ├── main.tsx               # Entry point
-│   └── index.css              # Global styles
-├── public/                    # Static assets
-├── .env                       # Environment variables (not in git)
-├── vercel.json               # Vercel deployment config
-└── package.json              # Dependencies
+│   │   ├── auth.ts            # Authentication service
+│   │   ├── pdfStorage.ts      # PDF storage service
+│   │   └── gemini.ts          # Gemini AI integration
+│   ├── contexts/
+│   │   └── AuthContext.tsx     # Authentication context
+│   ├── lib/
+│   │   └── supabase.ts        # Supabase client configuration
+│   └── App.tsx                # Main app with routing
+├── SUPABASE_SETUP.md          # Detailed Supabase setup guide
+├── TROUBLESHOOTING.md         # Troubleshooting guide
+└── README.md                  # This file
 ```
 
-## Vercel Deployment
+## 🎯 Hackathon Highlights
 
-### Step 1: Prepare Your Repository
+### Problem Solved
+Students struggle with passive learning from PDFs. Brain Brew transforms this into an active, engaging experience.
 
-1. Push your code to GitHub, GitLab, or Bitbucket
-2. Ensure all files are committed and pushed
+### Innovation
+- Combines ancient Socratic method with modern AI
+- Adaptive learning that personalizes to each user
+- Beautiful, modern UI that makes learning enjoyable
 
-### Step 2: Connect to Vercel
+### Technical Achievements
+- Full-stack application built in a hackathon timeframe
+- Secure authentication and file storage
+- AI integration for intelligent question generation
+- Responsive, beautiful UI with gradient design
 
-1. Go to [vercel.com](https://vercel.com) and sign in
-2. Click **"New Project"**
-3. Import your repository
-4. Vercel will auto-detect Vite framework
+## 🚀 Deployment
 
-### Step 3: Configure Environment Variables
+### Vercel Deployment
+1. Push code to GitHub
+2. Import to Vercel
+3. Add environment variables in Vercel dashboard
+4. Deploy!
 
-**This is crucial!** You must add your Gemini API key:
+See [VERCEL_DEPLOYMENT.md](./VERCEL_DEPLOYMENT.md) for detailed instructions.
 
-1. In your Vercel project dashboard, go to **Settings** → **Environment Variables**
-2. Click **"Add New"**
-3. Add the following:
-   - **Name**: `VITE_GEMINI_API_KEY`
-   - **Value**: Your Google Gemini API key
-   - **Environment**: Select all (Production, Preview, Development)
-4. Click **"Save"**
+## 📝 Environment Variables
 
-### Step 4: Deploy
+| Variable | Description | Where to Get It |
+|----------|-------------|-----------------|
+| `VITE_SUPABASE_URL` | Supabase project URL | Supabase Dashboard → Settings → API |
+| `VITE_SUPABASE_ANON_KEY` | Supabase anon key | Supabase Dashboard → Settings → API |
+| `VITE_GEMINI_API_KEY` | Google Gemini API key | [Google AI Studio](https://makersuite.google.com/app/apikey) |
 
-1. Vercel will automatically start building
-2. The build command is: `npm run build`
-3. Output directory is: `dist`
-4. Wait for deployment to complete
+## 🐛 Troubleshooting
 
-### Step 5: Verify Deployment
+See [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) for common issues and solutions.
 
-1. Visit your deployed URL
-2. Test PDF upload functionality
-3. Verify API calls work correctly
-4. Check browser console for any errors
+Common issues:
+- "Failed to fetch" errors → Check if Supabase project is paused
+- Missing environment variables → Restart dev server after adding to `.env`
+- Authentication errors → Verify Supabase credentials
 
-## Environment Variables
+## 🎓 Learning Features Explained
 
-### Required
+### Socratic Method
+The Socratic method uses questions to stimulate critical thinking. Brain Brew generates questions that:
+- Start simple and progress to complex
+- Encourage deep understanding, not memorization
+- Adapt to your learning pace
 
-- `VITE_GEMINI_API_KEY`: Your Google Gemini API key
+### Adaptive Difficulty
+- **Level 1**: Basic recall questions
+- **Level 2**: Understanding and application
+- **Level 3**: Analysis and synthesis
+- **Level 4**: Advanced critical thinking
 
-### How to Get a Gemini API Key
+The system tracks your performance and adjusts difficulty automatically.
 
-1. Go to [Google AI Studio](https://makersuite.google.com/app/apikey)
-2. Sign in with your Google account
-3. Click **"Create API Key"**
-4. Copy the generated key
-5. Add it to your `.env` file (local) or Vercel environment variables (production)
+### Progressive Hints
+When you're stuck, Brain Brew provides up to 3 hints:
+- **Hint 1**: Gentle nudge in the right direction
+- **Hint 2**: More specific guidance
+- **Hint 3**: Direct clue to the answer
 
-## Build Configuration
+## 📊 Supabase Free Tier
 
-The project uses Vite with the following configuration:
+Brain Brew uses Supabase's generous free tier:
+- ✅ 50,000 monthly active users
+- ✅ 500 MB database storage
+- ✅ 1 GB file storage (perfect for PDFs)
+- ✅ 5 GB bandwidth per month
+- ✅ Unlimited API requests
 
-- **Build Command**: `npm run build`
-- **Output Directory**: `dist`
-- **Framework**: Vite
-- **Node Version**: 18.x or higher (auto-detected by Vercel)
+**Note**: Free projects pause after 1 week of inactivity but can be resumed instantly.
 
-## Troubleshooting
+## 🤝 Contributing
 
-### Build Errors
+This is a hackathon project, but contributions are welcome! Feel free to:
+- Report bugs
+- Suggest features
+- Submit pull requests
+- Share feedback
 
-**Issue**: Build fails with dependency errors
-- **Solution**: Run `npm install` locally and commit `package-lock.json`
-
-**Issue**: Build succeeds but app doesn't load
-- **Solution**: Check that `vercel.json` has correct rewrites for SPA routing
-
-### API Key Issues
-
-**Issue**: "VITE_GEMINI_API_KEY is not set"
-- **Solution**: 
-  - Local: Check `.env` file exists and has the correct variable name
-  - Vercel: Verify environment variable is set in Vercel dashboard
-
-**Issue**: API calls fail with 401/403 errors
-- **Solution**: Verify your API key is valid and has proper permissions
-
-### Routing Issues
-
-**Issue**: 404 errors on page refresh
-- **Solution**: The `vercel.json` includes rewrites to handle SPA routing. If issues persist, verify the rewrites configuration.
-
-### Rate Limiting
-
-**Issue**: "API rate limit reached"
-- **Solution**: Wait a few moments and try again. Consider upgrading your Gemini API plan if needed.
-
-## Development Scripts
-
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build locally
-- `npm run lint` - Run ESLint
-
-## Design Guidelines
-
-- **Desktop-only**: Minimum width 1200px (no mobile responsive)
-- **Light mode only**: No dark mode support
-- **Max content width**: 1600px (centered)
-- **Color scheme**: Clean, modern light theme
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
-
-## License
+## 📄 License
 
 This project is open source and available under the MIT License.
 
-## Support
+## 🙏 Acknowledgments
 
-For issues or questions:
-1. Check the troubleshooting section above
-2. Review Vercel deployment logs
-3. Check browser console for errors
-4. Verify environment variables are set correctly
+- **Supabase** for providing an amazing free backend platform
+- **Google Gemini AI** for powerful AI capabilities
+- **React & Vite** communities for excellent tooling
+- **Tailwind CSS** for beautiful styling utilities
 
 ---
 
-**Happy Learning! 📚✨**
+**Built with ❤️ for Hackathon 2024**
+
+**Start brewing your brain today! 🧠✨**

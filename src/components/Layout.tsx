@@ -17,10 +17,10 @@ function Layout({ children }: LayoutProps) {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0a1f]">
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-pink-900 to-blue-900">
       {/* Navigation Bar */}
       {user && (
-        <nav className="bg-gray-900 border-b border-gray-800">
+        <nav className="bg-gradient-to-r from-purple-900/90 via-pink-900/90 to-blue-900/90 backdrop-blur-md border-b border-white/10">
           <div className="mx-auto max-w-[1600px] px-8 py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-6">
@@ -28,8 +28,8 @@ function Layout({ children }: LayoutProps) {
                   onClick={() => navigate('/upload')}
                   className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                     location.pathname === '/upload'
-                      ? 'bg-blue-600 text-white'
-                      : 'text-gray-400 hover:text-white'
+                      ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white'
+                      : 'text-gray-300 hover:text-white hover:bg-white/10'
                   }`}
                 >
                   Upload PDF
@@ -38,18 +38,18 @@ function Layout({ children }: LayoutProps) {
                   onClick={() => navigate('/dashboard')}
                   className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                     location.pathname === '/dashboard'
-                      ? 'bg-blue-600 text-white'
-                      : 'text-gray-400 hover:text-white'
+                      ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white'
+                      : 'text-gray-300 hover:text-white hover:bg-white/10'
                   }`}
                 >
                   My PDFs
                 </button>
               </div>
               <div className="flex items-center space-x-4">
-                <span className="text-gray-400 text-sm">{user.email}</span>
+                <span className="text-gray-300 text-sm">{user.email}</span>
                 <button
                   onClick={handleSignOut}
-                  className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors text-sm font-medium"
+                  className="px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-700 hover:to-pink-700 transition-colors text-sm font-medium"
                 >
                   Sign Out
                 </button>

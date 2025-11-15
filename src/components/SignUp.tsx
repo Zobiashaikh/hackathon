@@ -39,8 +39,8 @@ function SignUp() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-900 px-4">
-      <div className="w-full max-w-md bg-gray-800 border border-gray-700 rounded-lg shadow-xl p-8">
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-900 via-pink-900 to-blue-900 px-4">
+      <div className="w-full max-w-md bg-gradient-to-br from-purple-900/80 via-pink-900/80 to-blue-900/80 backdrop-blur-md border border-white/20 rounded-lg shadow-xl p-8">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-white mb-2">Create Account</h1>
           <p className="text-gray-400">Start your learning journey today</p>
@@ -102,7 +102,7 @@ function SignUp() {
               w-full py-3 px-4 rounded-lg font-medium transition-colors
               ${isLoading
                 ? 'bg-gray-700 text-gray-400 cursor-not-allowed'
-                : 'bg-blue-600 text-white hover:bg-blue-700'
+                : 'bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-white hover:from-pink-600 hover:via-purple-600 hover:to-blue-600'
               }
             `}
           >
@@ -113,7 +113,7 @@ function SignUp() {
         <div className="mt-6 text-center">
           <p className="text-gray-400">
             Already have an account?{' '}
-            <Link to="/login" className="text-blue-500 hover:text-blue-400 font-medium">
+            <Link to="/login" className="text-purple-400 hover:text-pink-400 font-medium">
               Sign in
             </Link>
           </p>
