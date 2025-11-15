@@ -2,11 +2,29 @@
 
 **A Hackathon Project - Revolutionizing Learning Through AI-Powered Socratic Questioning**
 
-Brain Brew is an innovative learning platform that transforms passive PDF reading into an engaging, interactive learning experience. Built for a hackathon, this application combines the ancient Socratic method with cutting-edge AI technology to help students truly understand their lecture materials, not just memorize them.
+Brain Brew is an innovative learning platform that transforms passive PDF reading into an engaging, interactive learning experience. Built for a hackathon focused on **"Digital Economy and Future Work"**, this application combines the ancient Socratic method with cutting-edge AI technology to help students develop critical thinking skills essential for tomorrow's workforce.
 
 ## 🎯 Project Overview
 
-Brain Brew addresses a common problem: students often passively read through lecture PDFs without truly understanding the content. Our solution uses AI-powered Socratic questioning to create an adaptive, personalized learning experience that ensures knowledge sticks and comprehension deepens.
+### The Problem: The AI Dependency Crisis
+
+In today's digital economy, students are increasingly relying on AI tools like ChatGPT to get instant answers, leading to a dangerous trend: **students are getting dumber because they're not thinking for themselves**. This passive consumption of AI-generated answers is creating a generation that lacks critical thinking skills—the very skills that will be most valuable in the future of work.
+
+Students often:
+- Copy-paste questions into ChatGPT without engaging with the material
+- Accept AI answers without understanding the reasoning
+- Passively read through lecture PDFs without truly comprehending the content
+- Lose the ability to think critically and solve problems independently
+
+### Our Solution: AI That Teaches You to Think
+
+Brain Brew flips the script on AI in education. Instead of giving you answers, it **asks you questions**—transforming AI from a crutch into a personal Socratic tutor. By using the Socratic method, Brain Brew ensures students develop the critical thinking, problem-solving, and analytical skills that will be indispensable in the digital economy and future workplace.
+
+**For the Digital Economy & Future Work:**
+- **Critical Thinking**: The most valuable skill in an AI-powered workforce
+- **Active Learning**: Preparing students to be innovators, not just consumers
+- **Adaptive Intelligence**: Teaching students to think alongside AI, not be replaced by it
+- **Workforce Readiness**: Building skills that automation can't replicate
 
 ## ✨ Key Features
 
@@ -29,12 +47,6 @@ Brain Brew addresses a common problem: students often passively read through lec
 - **Adaptive Difficulty**: System automatically adjusts question difficulty based on your performance
 - **Progressive Hints**: Get up to 3 hints per question when you need help
 - **Performance Tracking**: Visual feedback on your last 3 responses to track improvement
-
-### 📊 **Learning Analytics**
-- **Topic Progress Tracking**: See which topics from your PDF you've explored
-- **Performance Visualization**: Visual feedback on your learning progress
-- **Response History**: Track your answers and see patterns in your understanding
-- **Adaptive Algorithm**: Questions adapt in real-time to your learning pace
 
 ### 🎨 **Modern User Experience**
 - **Beautiful Gradient Design**: Stunning pink, purple, and blue gradient theme throughout
@@ -156,101 +168,14 @@ Brain Brew features a stunning gradient design with pink, purple, and blue color
 
 ## 🎯 Hackathon Highlights
 
+### Theme: Digital Economy and Future Work
+
+Brain Brew directly addresses the skills gap emerging in the digital economy. As AI becomes ubiquitous in the workplace, the ability to think critically, ask the right questions, and solve problems creatively will be what separates thriving professionals from those left behind.
+
 ### Problem Solved
-Students struggle with passive learning from PDFs. Brain Brew transforms this into an active, engaging experience.
+**The AI Dependency Crisis**: Students are consuming AI answers without thinking, losing critical thinking skills essential for the future workforce. Brain Brew transforms AI from a shortcut into a thinking partner that builds these crucial skills.
 
 ### Innovation
-- Combines ancient Socratic method with modern AI
-- Adaptive learning that personalizes to each user
-- Beautiful, modern UI that makes learning enjoyable
-
-### Technical Achievements
-- Full-stack application built in a hackathon timeframe
-- Secure authentication and file storage
-- AI integration for intelligent question generation
-- Responsive, beautiful UI with gradient design
-
-## 🚀 Deployment
-
-### Vercel Deployment
-1. Push code to GitHub
-2. Import to Vercel
-3. Add environment variables in Vercel dashboard
-4. Deploy!
-
-See [VERCEL_DEPLOYMENT.md](./VERCEL_DEPLOYMENT.md) for detailed instructions.
-
-## 📝 Environment Variables
-
-| Variable | Description | Where to Get It |
-|----------|-------------|-----------------|
-| `VITE_SUPABASE_URL` | Supabase project URL | Supabase Dashboard → Settings → API |
-| `VITE_SUPABASE_ANON_KEY` | Supabase anon key | Supabase Dashboard → Settings → API |
-| `VITE_GEMINI_API_KEY` | Google Gemini API key | [Google AI Studio](https://makersuite.google.com/app/apikey) |
-
-## 🐛 Troubleshooting
-
-See [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) for common issues and solutions.
-
-Common issues:
-- "Failed to fetch" errors → Check if Supabase project is paused
-- Missing environment variables → Restart dev server after adding to `.env`
-- Authentication errors → Verify Supabase credentials
-
-## 🎓 Learning Features Explained
-
-### Socratic Method
-The Socratic method uses questions to stimulate critical thinking. Brain Brew generates questions that:
-- Start simple and progress to complex
-- Encourage deep understanding, not memorization
-- Adapt to your learning pace
-
-### Adaptive Difficulty
-- **Level 1**: Basic recall questions
-- **Level 2**: Understanding and application
-- **Level 3**: Analysis and synthesis
-- **Level 4**: Advanced critical thinking
-
-The system tracks your performance and adjusts difficulty automatically.
-
-### Progressive Hints
-When you're stuck, Brain Brew provides up to 3 hints:
-- **Hint 1**: Gentle nudge in the right direction
-- **Hint 2**: More specific guidance
-- **Hint 3**: Direct clue to the answer
-
-## 📊 Supabase Free Tier
-
-Brain Brew uses Supabase's generous free tier:
-- ✅ 50,000 monthly active users
-- ✅ 500 MB database storage
-- ✅ 1 GB file storage (perfect for PDFs)
-- ✅ 5 GB bandwidth per month
-- ✅ Unlimited API requests
-
-**Note**: Free projects pause after 1 week of inactivity but can be resumed instantly.
-
-## 🤝 Contributing
-
-This is a hackathon project, but contributions are welcome! Feel free to:
-- Report bugs
-- Suggest features
-- Submit pull requests
-- Share feedback
-
-## 📄 License
-
-This project is open source and available under the MIT License.
-
-## 🙏 Acknowledgments
-
-- **Supabase** for providing an amazing free backend platform
-- **Google Gemini AI** for powerful AI capabilities
-- **React & Vite** communities for excellent tooling
-- **Tailwind CSS** for beautiful styling utilities
-
----
-
-**Built with ❤️ for Hackathon 2024**
-
-**Start brewing your brain today! 🧠✨**
+- **Combats AI Dependency**: Uses AI to teach thinking, not replace it
+- **Builds Workforce Skills**: Develops critical thinking, problem-solving, and analytical reasoning
+- **Socratic Method Meets Modern AI**: Ancient wisdom powered by cutting-edge technology
