@@ -645,7 +645,7 @@ function LearningInterface() {
 }
 
   return (
-    <div className="flex flex-col h-screen bg-gradient-to-br from-purple-900 via-pink-900 via-orange-900 to-blue-900">
+    <div className="flex flex-col h-screen bg-slate-900">
       {/* Top Bar */}
       <div className="bg-gradient-to-r from-purple-900/90 via-pink-900/90 via-orange-900/90 to-blue-900/90 backdrop-blur-md border-b border-white/10 px-8 py-4">
         <div className="flex items-center justify-between">
@@ -696,7 +696,7 @@ function LearningInterface() {
         {/* Main Chat Area */}
         <div className="flex-1 flex flex-col overflow-hidden">
           {/* Chat Messages */}
-          <div className="flex-1 overflow-y-auto px-8 py-6 space-y-4 bg-gradient-to-b from-purple-900/20 via-pink-900/20 via-orange-900/20 to-blue-900/20">
+          <div className="flex-1 overflow-y-auto px-8 py-6 space-y-4 bg-slate-900">
             {/* Empty State */}
             {messages.length === 0 && !isLoading && (
               <div className="flex items-center justify-center h-full">
@@ -796,7 +796,7 @@ function LearningInterface() {
           </div>
 
           {/* Input Area */}
-<div className="border-t border-white/10 bg-gradient-to-r from-purple-900/80 via-pink-900/80 via-orange-900/80 to-blue-900/80 backdrop-blur-md px-8 py-4">
+<div className="border-t border-white/10 bg-slate-900 px-8 py-4">
   <div className="max-w-4xl mx-auto">
     <div className="mb-3">
       <div className="relative">
@@ -890,9 +890,9 @@ function LearningInterface() {
         </div>
 
         {/* Right Sidebar */}
-<div className="w-96 bg-gradient-to-b from-purple-900/80 via-pink-900/80 via-orange-900/80 to-blue-900/80 backdrop-blur-md border-l border-white/10 flex flex-col">
+<div className="w-96 bg-slate-900 border-l border-white/10 flex flex-col">
   {/* Simple Info Section */}
-  <div className="p-4 bg-gradient-to-br from-purple-900/60 via-pink-900/60 via-orange-900/60 to-blue-900/60 backdrop-blur-sm border-b border-white/10">
+  <div className="p-4 bg-slate-800 border-b border-white/10">
     <div className="space-y-3">
       <div>
         <div

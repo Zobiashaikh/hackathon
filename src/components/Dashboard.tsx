@@ -21,15 +21,31 @@ function Dashboard() {
     if (!user) return
 
     setLoading(true)
-    const { data, error } = await pdfStorageService.getUserPDFs(user.id)
+    try {
+      const { data, error } = await pdfStorageService.getUserPDFs(user.id)
 
-    if (error) {
-      toast.error('Failed to load PDFs')
-    } else {
-      setPdfs(data || [])
+      if (error) {
+        console.error('Failed to load PDFs:', error)
+        console.error('Error details:', {
+          message: error.message,
+          userId: user.id
+        })
+        toast.error(`Failed to load PDFs: ${error.message}`)
+        setPdfs([])
+      } else {
+        console.log('PDFs loaded successfully:', data)
+        setPdfs(data || [])
+        if (data && data.length > 0) {
+          console.log(`Loaded ${data.length} PDF(s)`)
+        }
+      }
+    } catch (err) {
+      console.error('Unexpected error loading PDFs:', err)
+      toast.error('An unexpected error occurred while loading PDFs.')
+      setPdfs([])
+    } finally {
+      setLoading(false)
     }
-
-    setLoading(false)
   }
 
   const handleDelete = async (pdfId: string, filePath: string) => {

@@ -113,27 +113,57 @@ function PDFUpload() {
 
       // Save PDF to Supabase
       setIsSaving(true)
-      const { path: filePath, error: uploadError } = await pdfStorageService.uploadPDF(file, user.id)
-      
-      if (uploadError) {
-        console.error('Failed to upload PDF:', uploadError)
-        toast.error('PDF processed but failed to save. You can still use it for learning.')
-      } else {
-        // Save PDF record to database
-        const { error: saveError } = await pdfStorageService.savePDFRecord({
-          user_id: user.id,
-          file_name: file.name,
-          file_path: filePath,
-          file_size: file.size,
-          topics: analysis.topics,
-        })
-
-        if (saveError) {
-          console.error('Failed to save PDF record:', saveError)
-          toast.error('PDF processed but failed to save record.')
+      try {
+        const { path: filePath, error: uploadError } = await pdfStorageService.uploadPDF(file, user.id)
+        
+        if (uploadError) {
+          console.error('Failed to upload PDF:', uploadError)
+          console.error('Upload error details:', {
+            message: uploadError.message,
+            userId: user.id,
+            fileName: file.name,
+            fileSize: file.size
+          })
+          toast.error(`PDF processed but failed to save: ${uploadError.message}`)
+        } else if (!filePath) {
+          console.error('Upload succeeded but no file path returned')
+          toast.error('PDF processed but failed to get file path.')
         } else {
-          toast.success('PDF saved successfully!')
+          // Save PDF record to database
+          const { data, error: saveError } = await pdfStorageService.savePDFRecord({
+            user_id: user.id,
+            file_name: file.name,
+            file_path: filePath,
+            file_size: file.size,
+            topics: analysis.topics,
+          })
+
+          if (saveError) {
+            console.error('Failed to save PDF record:', saveError)
+            console.error('Save error details:', {
+              message: saveError.message,
+              record: {
+                user_id: user.id,
+                file_name: file.name,
+                file_path: filePath,
+                file_size: file.size,
+                topics: analysis.topics
+              }
+            })
+            toast.error(`PDF processed but failed to save record: ${saveError.message}`)
+          } else if (!data) {
+            console.error('Save succeeded but no data returned')
+            toast.error('PDF processed but failed to get saved record.')
+          } else {
+            console.log('PDF saved successfully:', data)
+            toast.success('PDF saved successfully!')
+          }
         }
+      } catch (saveErr) {
+        console.error('Unexpected error saving PDF:', saveErr)
+        toast.error('An unexpected error occurred while saving the PDF.')
+      } finally {
+        setIsSaving(false)
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to process PDF. Please try again.'

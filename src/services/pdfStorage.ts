@@ -16,10 +16,19 @@ export const pdfStorageService = {
   async uploadPDF(file: File, userId: string): Promise<{ path: string; error: Error | null }> {
     try {
       const fileExt = file.name.split('.').pop()
-      const fileName = `${userId}/${Date.now()}.${fileExt}`
-      const filePath = `pdfs/${fileName}`
+      const fileName = `${Date.now()}.${fileExt}`
+      // Store files in user-specific folder: userId/filename
+      const filePath = `${userId}/${fileName}`
 
-      const { error: uploadError } = await supabase.storage
+      console.log('Uploading PDF:', {
+        userId,
+        fileName,
+        filePath,
+        fileSize: file.size,
+        fileType: file.type
+      })
+
+      const { data, error: uploadError } = await supabase.storage
         .from('pdfs')
         .upload(filePath, file, {
           cacheControl: '3600',
@@ -27,11 +36,20 @@ export const pdfStorageService = {
         })
 
       if (uploadError) {
+        console.error('Storage upload error:', uploadError)
+        console.error('Error details:', {
+          message: uploadError.message,
+          statusCode: uploadError.statusCode,
+          error: uploadError.error
+        })
         return { path: '', error: new Error(uploadError.message) }
       }
 
+      console.log('PDF uploaded successfully:', data)
+      // Return the full path including bucket name for database storage
       return { path: filePath, error: null }
     } catch (err) {
+      console.error('Exception in uploadPDF:', err)
       return {
         path: '',
         error: err instanceof Error ? err : new Error('Failed to upload PDF'),
@@ -64,6 +82,8 @@ export const pdfStorageService = {
   // Get all PDFs for a user
   async getUserPDFs(userId: string): Promise<{ data: PDFRecord[] | null; error: Error | null }> {
     try {
+      console.log('Fetching PDFs for user:', userId)
+      
       const { data, error } = await supabase
         .from('user_pdfs')
         .select('*')
@@ -71,11 +91,22 @@ export const pdfStorageService = {
         .order('created_at', { ascending: false })
 
       if (error) {
-        return { data: null, error: new Error(error.message) }
+        console.error('Supabase query error:', error)
+        console.error('Error code:', error.code)
+        console.error('Error message:', error.message)
+        console.error('Error details:', error.details)
+        console.error('Error hint:', error.hint)
+        return { data: null, error: new Error(`${error.message} (Code: ${error.code})`) }
+      }
+
+      console.log('PDFs fetched successfully:', data?.length || 0, 'PDF(s)')
+      if (data && data.length > 0) {
+        console.log('PDF records:', data)
       }
 
       return { data: data as PDFRecord[], error: null }
     } catch (err) {
+      console.error('Exception in getUserPDFs:', err)
       return {
         data: null,
         error: err instanceof Error ? err : new Error('Failed to fetch PDFs'),

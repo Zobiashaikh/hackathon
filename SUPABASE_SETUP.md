@@ -39,34 +39,54 @@ VITE_GEMINI_API_KEY=your_gemini_api_key_here
 
 ## Step 4: Set Up Storage Policies
 
+**⚠️ IMPORTANT**: Use the SQL Editor method below for more reliable policy setup.
+
+1. Go to **SQL Editor** in your Supabase dashboard
+2. Click **New Query**
+3. Copy and paste the following SQL, then click **Run**:
+
+```sql
+-- Policy 1: Allow users to upload PDFs to their own folder
+CREATE POLICY "Users can upload to own folder"
+ON storage.objects
+FOR INSERT
+TO authenticated
+WITH CHECK (
+  bucket_id = 'pdfs' 
+  AND name LIKE auth.uid()::text || '/%'
+);
+
+-- Policy 2: Allow users to view PDFs in their own folder
+CREATE POLICY "Users can view own PDFs"
+ON storage.objects
+FOR SELECT
+TO authenticated
+USING (
+  bucket_id = 'pdfs' 
+  AND name LIKE auth.uid()::text || '/%'
+);
+
+-- Policy 3: Allow users to delete PDFs in their own folder
+CREATE POLICY "Users can delete own PDFs"
+ON storage.objects
+FOR DELETE
+TO authenticated
+USING (
+  bucket_id = 'pdfs' 
+  AND name LIKE auth.uid()::text || '/%'
+);
+```
+
+**Alternative Method (Using UI):**
 1. Go to **Storage** → **Policies** for the `pdfs` bucket
-2. Click **New Policy**
-3. Create a policy for **INSERT**:
-   - Policy name: `Users can upload their own PDFs`
-   - Allowed operation: `INSERT`
-   - Policy definition:
-     ```sql
-     (bucket_id = 'pdfs'::text) AND ((auth.uid())::text = (storage.foldername(name))[1])
-     ```
-   - This allows users to upload PDFs only to their own folder
+2. Click **New Policy** → **For full customization**
+3. For each policy (INSERT, SELECT, DELETE), use:
+   - Policy name: `Users can [action] own PDFs`
+   - Allowed operation: `INSERT` / `SELECT` / `DELETE`
+   - Policy definition: `bucket_id = 'pdfs' AND name LIKE auth.uid()::text || '/%'`
+   - Target roles: `authenticated`
 
-4. Create a policy for **SELECT**:
-   - Policy name: `Users can view their own PDFs`
-   - Allowed operation: `SELECT`
-   - Policy definition:
-     ```sql
-     (bucket_id = 'pdfs'::text) AND ((auth.uid())::text = (storage.foldername(name))[1])
-     ```
-   - This allows users to view only their own PDFs
-
-5. Create a policy for **DELETE**:
-   - Policy name: `Users can delete their own PDFs`
-   - Allowed operation: `DELETE`
-   - Policy definition:
-     ```sql
-     (bucket_id = 'pdfs'::text) AND ((auth.uid())::text = (storage.foldername(name))[1])
-     ```
-   - This allows users to delete only their own PDFs
+**Note**: These policies ensure users can only access files in folders named with their user ID.
 
 ## Step 5: Create Database Table
 

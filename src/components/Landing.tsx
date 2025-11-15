@@ -69,7 +69,7 @@ function Landing() {
       </div>
 
       {/* About Section */}
-      <div className="relative w-full min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-pink-900 py-20 px-8">
+      <div className="relative w-full min-h-screen bg-gradient-to-b from-slate-900 via-pink-900 via-purple-900 to-blue-900 py-20 px-8">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 bg-clip-text text-transparent mb-6">
