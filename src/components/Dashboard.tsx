@@ -48,6 +48,88 @@ function Dashboard() {
     }
   }
 
+  const handleViewPDF = async (pdf: PDFRecord) => {
+    try {
+      // Get signed URL for viewing/downloading
+      const { url, error } = await pdfStorageService.getPDFUrl(pdf.file_path)
+      
+      if (error || !url) {
+        toast.error('Failed to get PDF URL. Please try again.')
+        console.error('Error getting PDF URL:', error)
+        return
+      }
+
+      // Open PDF in new tab
+      window.open(url, '_blank')
+    } catch (err) {
+      console.error('Error viewing PDF:', err)
+      toast.error('Failed to open PDF. Please try again.')
+    }
+  }
+
+  const handleContinueLearning = async (pdf: PDFRecord) => {
+    try {
+      toast.loading('Loading PDF for learning...', { id: 'loading-pdf' })
+      
+      // Get signed URL to download the PDF
+      const { url, error } = await pdfStorageService.getPDFUrl(pdf.file_path)
+      
+      if (error || !url) {
+        toast.error('Failed to load PDF. Please try again.', { id: 'loading-pdf' })
+        console.error('Error getting PDF URL:', error)
+        return
+      }
+
+      // Fetch the PDF file
+      const response = await fetch(url)
+      if (!response.ok) {
+        throw new Error('Failed to fetch PDF file')
+      }
+      
+      const blob = await response.blob()
+      const file = new File([blob], pdf.file_name, { type: 'application/pdf' })
+
+      // Process the PDF
+      const { processPDF, analyzePDFContent } = await import('../services/gemini')
+      const extractedText = await processPDF(file)
+      const analysis = await analyzePDFContent(extractedText)
+
+      // Convert to base64 for learning interface
+      const fileToBase64 = (file: File): Promise<string> => {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader()
+          reader.onload = () => {
+            if (typeof reader.result === 'string') {
+              const base64 = reader.result.split(',')[1]
+              resolve(base64)
+            } else {
+              reject(new Error('Failed to convert file to base64'))
+            }
+          }
+          reader.onerror = () => reject(new Error('Error reading file'))
+          reader.readAsDataURL(file)
+        })
+      }
+
+      const pdfBase64 = await fileToBase64(file)
+
+      toast.success('PDF loaded successfully!', { id: 'loading-pdf' })
+
+      // Navigate to learning interface with PDF data
+      navigate('/learn', {
+        state: {
+          pdfContent: extractedText,
+          pdfFileData: pdfBase64,
+          analysisResult: analysis,
+          pdfFileName: pdf.file_name,
+        },
+      })
+    } catch (err) {
+      console.error('Error loading PDF for learning:', err)
+      toast.error('Failed to load PDF for learning. Please try again.', { id: 'loading-pdf' })
+    }
+  }
+
   const handleDelete = async (pdfId: string, filePath: string) => {
     if (!confirm('Are you sure you want to delete this PDF?')) return
 
@@ -192,14 +274,23 @@ function Dashboard() {
 
                   <div className="flex gap-2">
                     <button
-                      onClick={() => navigate('/upload')}
+                      onClick={() => handleViewPDF(pdf)}
                       className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+                      title="View PDF in new tab"
                     >
-                      View
+                      View PDF
+                    </button>
+                    <button
+                      onClick={() => handleContinueLearning(pdf)}
+                      className="flex-1 px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-lg hover:from-pink-600 hover:to-purple-600 transition-colors text-sm font-medium"
+                      title="Continue learning with this PDF"
+                    >
+                      Learn
                     </button>
                     <button
                       onClick={() => pdf.id && handleDelete(pdf.id, pdf.file_path)}
                       className="px-4 py-2 bg-red-600/20 text-red-400 rounded-lg hover:bg-red-600/30 transition-colors text-sm font-medium"
+                      title="Delete PDF"
                     >
                       Delete
                     </button>

@@ -114,12 +114,32 @@ export const pdfStorageService = {
     }
   },
 
-  // Get PDF download URL
+  // Get PDF download URL (signed URL for private buckets)
   async getPDFUrl(filePath: string): Promise<{ url: string | null; error: Error | null }> {
     try {
-      const { data } = await supabase.storage.from('pdfs').getPublicUrl(filePath)
-      return { url: data.publicUrl, error: null }
+      console.log('Getting PDF URL for:', filePath)
+      
+      // For private buckets, we need to create a signed URL
+      // Signed URLs expire after 1 hour (3600 seconds)
+      const { data, error } = await supabase.storage
+        .from('pdfs')
+        .createSignedUrl(filePath, 3600) // Valid for 1 hour
+
+      if (error) {
+        console.error('Error creating signed URL:', error)
+        // Fallback to public URL if signed URL fails
+        const { data: publicData } = await supabase.storage.from('pdfs').getPublicUrl(filePath)
+        if (publicData) {
+          console.log('Using public URL as fallback')
+          return { url: publicData.publicUrl, error: null }
+        }
+        return { url: null, error: new Error(error.message) }
+      }
+
+      console.log('Signed URL created successfully')
+      return { url: data.signedUrl, error: null }
     } catch (err) {
+      console.error('Exception in getPDFUrl:', err)
       return {
         url: null,
         error: err instanceof Error ? err : new Error('Failed to get PDF URL'),
